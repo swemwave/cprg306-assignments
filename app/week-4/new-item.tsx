@@ -36,8 +36,9 @@ export default function NewItem() {
   const disableButton = name.trim().length < 2;
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-md space-y-4">
+    <form onSubmit={handleSubmit} className="max-w-md space-y-4 border p-6 rounded shadow">
       <div>
+        <h1 className="text-2xl font-bold mb-4">Shopping List - Add Item</h1>
         <label className="block">Name</label>
         <input
           type="text"
