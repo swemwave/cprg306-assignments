@@ -15,13 +15,37 @@ export default function ItemList() {
   const items = itemsData as ShoppingItem[];
   const [sortBy, setSortBy] = useState("name");
 
-  const buttons = (
-    <div className="space-x-2 py-3">
-      <button className="border border-white px-3 py-1 rounded" onClick={() => setSortBy("name")}>Sort by Name <br /></button>{" "}
-      <button className="border border-white px-3 py-1 rounded"onClick={() => setSortBy("category")}>Sort by Category <br /></button>{" "}
-      <button className="border border-white px-3 py-1 rounded" onClick={() => setSortBy("grouped")}>Grouped <br /></button>
-    </div>
-  );
+const buttons = (
+  <div className="space-x-2 py-3">
+    <button
+      onClick={() => setSortBy("name")}
+      className={`border border-white px-3 py-1 rounded ${
+        sortBy === "name" ? "bg-white text-black" : "bg-transparent text-white"
+      }`}
+    >
+      Sort by Name <br />
+    </button>{" "}
+
+    <button
+      onClick={() => setSortBy("category")}
+      className={`border border-white px-3 py-1 rounded ${
+        sortBy === "category" ? "bg-white text-black" : "bg-transparent text-white"
+      }`}
+    >
+      Sort by Category <br />
+    </button>{" "}
+
+    <button
+      onClick={() => setSortBy("grouped")}
+      className={`border border-white px-3 py-1 rounded ${
+        sortBy === "grouped" ? "bg-white text-black" : "bg-transparent text-white"
+      }`}
+    >
+      Grouped <br />
+    </button>
+  </div>
+);
+
 
   let itemsToShow = [...items];
 
