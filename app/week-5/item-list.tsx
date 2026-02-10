@@ -13,50 +13,60 @@ type ShoppingItem = {
 
 export default function ItemList() {
   const items = itemsData as ShoppingItem[];
-  const [sortBy, setSortBy] = useState("name");
+  const [sortBy, setSortBy] = useState("name"); // "name" | "category" | "grouped"
 
-const buttons = (
-  <div className="space-x-2 py-3">
-    <button
-      onClick={() => setSortBy("name")}
-      className={`border border-white px-3 py-1 rounded ${
-        sortBy === "name" ? "bg-white text-black" : "bg-transparent text-white"
-      }`}
-    >
-      Sort by Name <br />
-    </button>{" "}
+  const buttonBase =
+    "border border-white/60 px-4 py-2 rounded-lg text-sm font-medium transition";
+  const buttonInactive = "bg-transparent text-white hover:bg-white/10";
+  const buttonActive = "bg-white text-slate-900";
 
-    <button
-      onClick={() => setSortBy("category")}
-      className={`border border-white px-3 py-1 rounded ${
-        sortBy === "category" ? "bg-white text-black" : "bg-transparent text-white"
-      }`}
-    >
-      Sort by Category <br />
-    </button>{" "}
+  const buttons = (
+    <div className="flex flex-wrap justify-center gap-2 py-3">
+      <button
+        type="button"
+        onClick={() => setSortBy("name")}
+        className={`${buttonBase} ${sortBy === "name" ? buttonActive : buttonInactive}`}
+      >
+        Sort by Name
+      </button>
 
-    <button
-      onClick={() => setSortBy("grouped")}
-      className={`border border-white px-3 py-1 rounded ${
-        sortBy === "grouped" ? "bg-white text-black" : "bg-transparent text-white"
-      }`}
-    >
-      Grouped <br />
-    </button>
-  </div>
-);
+      <button
+        type="button"
+        onClick={() => setSortBy("category")}
+        className={`${buttonBase} ${sortBy === "category" ? buttonActive : buttonInactive}`}
+      >
+        Sort by Category
+      </button>
 
+      <button
+        type="button"
+        onClick={() => setSortBy("grouped")}
+        className={`${buttonBase} ${sortBy === "grouped" ? buttonActive : buttonInactive}`}
+      >
+        Grouped
+      </button>
+    </div>
+  );
 
   let itemsToShow = [...items];
 
   if (sortBy === "name") {
-    itemsToShow.sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
+    itemsToShow.sort((a, b) => {
+      if (a.name < b.name) return -1;
+      if (a.name > b.name) return 1;
+      return 0;
+    });
   }
 
   if (sortBy === "category") {
-    itemsToShow.sort((a, b) =>
-      a.category < b.category ? -1 : a.category > b.category ? 1 : 0
-    );
+    itemsToShow.sort((a, b) => {
+      if (a.category < b.category) return -1;
+      if (a.category > b.category) return 1;
+      // tie-breaker: name
+      if (a.name < b.name) return -1;
+      if (a.name > b.name) return 1;
+      return 0;
+    });
   }
 
   if (sortBy === "grouped") {
@@ -68,38 +78,50 @@ const buttons = (
       grouped[cat].push(item);
     }
 
-    const categories = Object.keys(grouped).sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+    const categories = Object.keys(grouped).sort((a, b) => {
+      if (a < b) return -1;
+      if (a > b) return 1;
+      return 0;
+    });
 
     for (const cat of categories) {
-      grouped[cat].sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
+      grouped[cat].sort((a, b) => {
+        if (a.name < b.name) return -1;
+        if (a.name > b.name) return 1;
+        return 0;
+      });
     }
 
     return (
-      <div>
+      <div className="space-y-4">
         {buttons}
-        {categories.map((cat) => (
-          <div key={cat}>
-            <h2 className="capitalize">{cat}</h2>
-            <ul>
-              {grouped[cat].map((item) => (
-                <Item
-                  key={item.id}
-                  name={item.name}
-                  quantity={item.quantity}
-                  category={item.category}
-                />
-              ))}
-            </ul>
-          </div>
-        ))}
+
+        <div className="space-y-6">
+          {categories.map((cat) => (
+            <section key={cat} className="text-left">
+              <h2 className="mb-2 text-lg font-bold capitalize">{cat}</h2>
+              <ul className="space-y-2">
+                {grouped[cat].map((item) => (
+                  <Item
+                    key={item.id}
+                    name={item.name}
+                    quantity={item.quantity}
+                    category={item.category}
+                  />
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
       </div>
     );
   }
 
   return (
-    <div>
+    <div className="space-y-4">
       {buttons}
-      <ul>
+
+      <ul className="space-y-2 text-left">
         {itemsToShow.map((item) => (
           <Item
             key={item.id}
